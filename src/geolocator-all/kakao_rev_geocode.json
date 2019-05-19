@@ -1,0 +1,26 @@
+[
+  {
+    "road_address": {
+      "address_name": "서울특별시 중구 무교로 28",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "중구",
+      "region_3depth_name": "",
+      "road_name": "무교로",
+      "underground_yn": "N",
+      "main_building_no": "28",
+      "sub_building_no": "",
+      "building_name": "시그너스빌딩",
+      "zone_no": "04521"
+    },
+    "address": {
+      "address_name": "서울 중구 무교동 7",
+      "region_1depth_name": "서울",
+      "region_2depth_name": "중구",
+      "region_3depth_name": "무교동",
+      "mountain_yn": "N",
+      "main_address_no": "7",
+      "sub_address_no": "",
+      "zip_code": ""
+    }
+  }
+]

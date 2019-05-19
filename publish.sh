@@ -1,2 +1,2 @@
 #! /usr/bin/env bash
-git subtree push --prefix src/geolocator-naver origin gh-pages
+git subtree push --prefix src/geolocator-all origin gh-pages

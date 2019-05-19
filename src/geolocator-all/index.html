@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Geo Locator</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #app {
+      margin-top: 1em;
+      margin-bottom: 1em;
+    }
+
+    .map_wrap {
+      position: relative;
+      width: 100%;
+      height: 480px;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .alert {
+      display: block;
+      position: fixed;
+      bottom: 3em;
+      right: 3em;
+      max-width: 100%;
+      opacity: .8;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+<div id="app" class="container">
+  <div class="alert alert-danger alert-dismissible" role="alert" v-show="showError" style="display: none;">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>Error!</strong> {{ errorMessage }}
+  </div>
+  <div class="row">
+    <h1 class="page-header">주소/좌표로 위치 확인하기</h1>
+    <ul>
+      <li>입력창에 주소 또는 좌표를 입력하고 엔터를 눌러 지도상의 위치를 확인할 수 있습니다.</li>
+      <li>반대로 마우스로 지도상의 위치를 클릭하여 주소, 좌표, 행정구역코드를 확인할 수 있습니다.</li>
+      <li>건물이 있는 위치를 선택했을 때만 도로명이 출력됩니다.</li>
+      <li>2018-05-07 Update: 카카오에서 네이버로 지도 및 API를 변경했습니다.</li>
+    </ul>
+  </div>
+  <div class="row">
+    <form class="form-horizontal">
+      <div class="form-group col-md-4">
+        <input type="text"
+               name="address"
+               v-model="address"
+               @keyup.enter="updateByAddress"
+               class="form-control"
+               placeholder="주소를 입력해 주세요."
+        >
+      </div>
+      <div class="form-group col-md-4">
+        <input type="text"
+               name="coordsStr"
+               v-model="coordsStr"
+               @keyup.enter="updateByCoords"
+               class="form-control"
+               placeholder="좌표를 입력해 주세요."
+        >
+      </div>
+      <div class="form-group col-md-4">
+        <div class="input-group">
+          <input type="text"
+                 id="shareableUrl"
+                 v-model="shareableUrl"
+                 class="form-control"
+                 placeholder="현재 위치를 공유할 수 있는 URL입니다."
+          >
+          <span class="input-group-btn">
+              <button type="button" class="btn" data-clipboard-target="#shareableUrl">
+                <span class="glyphicon glyphicon-copy"></span>
+              </button>
+            </span>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="row">
+    <p class="help-block">도로명 주소: {{ roadAddress }}</p>
+    <p class="help-block">우편 번호: {{ zipCode }} / {{ zoneCode }}</p>
+    <p class="help-block">법정/행정/도로명 코드: {{ legalDongCode}} / {{ adminDongCode }} / {{ roadCode }}</p>
+  </div>
+  <div class="row">
+    <div class="panel panel-default">
+      <div class="map_wrap pannel-body">
+        <div id="map"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--이 ClientId는 Naver API Console에 http://localhost:8000, https://geo.appkr.dev 로 등록되어있습니다.-->
+<!--@see https://console.ncloud.com/mc/solution/naverService/application -->
+<script type="text/javascript"
+        src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=cfhj8hmmsi&submodules=geocoder"></script>
+
+<!--행정구역코드를 위해 Tmap API를 이용합니다 @see https://developers.sktelecom.com-->
+
+<!--우편변호를 위해 Kakao API를 이용합니다.-->
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=25ac2264842edf6e89876d76d479fb70&libraries=services"></script>
+
+<script src="//unpkg.com/axios/dist/axios.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
+<script>
+  const geocoder = naver.maps.Service;
+  let urlParser = document.createElement("a");
+  let map;
+  let marker;
+  let latLng;
+
+  let vm = new Vue({
+    el: "#app",
+
+    data: {
+      address: "서울특별시 중구 서소문동 37",
+      roadAddress: "서울특별시 중구 덕수궁길 15",
+      coords: [37.564363903078544, 126.97565350953265],
+      zipCode: "100813",
+      zoneCode: "04515",
+      legalDongCode: "1114016600",
+      adminDongCode: "1114052000",
+      roadCode: "111404103076",
+      showError: false,
+      errorMessage: "알 수 없는 오류가 발생했습니다.",
+    },
+
+    methods: {
+      updateByAddress() {
+        // 주소로 지오코드한 후 지도를 업데이트합니다.
+        const self = this;
+
+        geocoder.geocode({
+          address: self.address
+        }, (status, response) => {
+          if (status === naver.maps.Service.Status.ERROR) {
+            self.handleError("주소 검색에 실패했습니다: " + status);
+            return;
+          }
+
+          let items = response.result.items;
+          let jibun = self.findJibunAddress(items);
+          let road = self.findRoadAddress(items);
+          self.coords = [items[0].point.y, items[0].point.x];
+          self.roadAddress = road ? road.address : "";
+          latLng = new naver.maps.LatLng(items[0].point.y, items[0].point.x);
+          self.setMapCenter();
+        });
+
+        this.updateZipCode();
+        this.updateRegionCode();
+      },
+
+      updateByCoords() {
+        // 좌표로 역지오코드한 후 지도를 업데이트합니다.
+        const self = this;
+        latLng = new naver.maps.LatLng(self.coords[0], self.coords[1]);
+
+        geocoder.reverseGeocode({
+          location: latLng
+        }, (status, response) => {
+          if (status === naver.maps.Service.Status.ERROR) {
+            self.handleError("좌표 검색에 실패했습니다: " + status);
+            return;
+          }
+
+          let items = response.result.items;
+          let jibun = self.findJibunAddress(items);
+          let road = self.findRoadAddress(items);
+          self.address = jibun ? jibun.address : "";
+          self.roadAddress = road ? road.address : "";
+          self.setMapCenter();
+        });
+
+        this.updateZipCode();
+        this.updateRegionCode();
+      },
+
+      updateZipCode() {
+        // 우편번호를 찾습니댜.
+        const self = this;
+        const daumGeocoder = new daum.maps.services.Geocoder();
+
+        daumGeocoder.coord2Address(self.coords[1], self.coords[0], (result, status) => {
+          if (status === daum.maps.services.Status.OK) {
+            self.zipCode = result[0].address ? result[0].address.zip_code : "";
+            self.zoneCode = result[0].road_address ? result[0].road_address.zone_no : "";
+          } else {
+            self.zipCode = "";
+            self.zoneCode = "";
+          }
+        });
+      },
+
+      updateRegionCode() {
+        // 행정구역코드를 찾습니댜.
+        const self = this;
+        axios.get("https://api2.sktelecom.com/tmap/geo/reversegeocoding", {
+            params: {
+              "version": "1",
+              "format": "json",
+              "callback": "result",
+              "coordType": "WGS84GEO",
+              "addressType": "A10",
+              "lon": self.coords[1],
+              "lat": self.coords[0],
+              "appKey": "abc5e5c0-ce99-4f7f-8d54-c9eb3c528b2d",
+            }
+          })
+          .then(response => {
+            const res = response.data.addressInfo;
+            if (res == undefined) {
+              self.legalDongCode = self.adminDongCode = self.roadCode = "";
+              return;
+            }
+            self.legalDongCode = (res.legalDongCode != undefined) ? res.legalDongCode : "";
+            self.adminDongCode = (res.adminDongCode != undefined) ? res.adminDongCode : "";
+            self.roadCode = (res.roadCode != undefined) ? res.roadCode : "";
+          })
+          .catch((request, status, error) => {
+            self.legalDongCode = self.adminDongCode = self.roadCode = "";
+          });
+      },
+
+      findJibunAddress(items) {
+        return items.find(item => {
+          return (false === item.isRoadAddress);
+        });
+      },
+
+      findRoadAddress(items) {
+        return items.find(item => {
+          return (true === item.isRoadAddress);
+        });
+      },
+
+      setMapCenter() {
+        map.setCenter(latLng);
+        marker.setPosition(latLng);
+      },
+
+      handleError(errorMessage) {
+        const self = this;
+
+        window.setTimeout(() => {
+          self.showError = false;
+        }, 3000);
+
+        self.errorMessage = errorMessage;
+        self.showError = true;
+      },
+
+      setCoordsFromQueryStringIfAny() {
+        const queryString = window.location.search.substring(1);
+
+        if (queryString.length === 0) {
+          return;
+        }
+
+        const queries = queryString.match(/lat=([0-9]+\.[0-9]+)&lng=([0-9]+\.[0-9]+)/);
+
+        if (queries === null || queries.length < 3) {
+          // queryes = ["lat=37.566&lng=126.975", "37.566", "126.975"];
+          // Both lat, lng are required.
+          this.handleError("주소에 포함된 위경도 형식이 틀립니다: " + queryString);
+          return;
+        }
+
+        this.coords = [parseFloat(queries[1]), parseFloat(queries[2])];
+        this.updateByCoords();
+      },
+
+      initClipboard() {
+        return new Clipboard(".btn");
+      }
+    },
+
+    computed: {
+      coordsStr: {
+        get() {
+          return this.coords.join(",");
+        },
+        set(value) {
+          this.coords = value.split(",").map((item) => {
+            return item.trim();
+          });
+        }
+      },
+
+      shareableUrl() {
+        urlParser.href = window.location.href;
+        const port = (urlParser.port.length > 0) ? ":" + urlParser.port : "";
+
+        return urlParser.protocol + "//" + urlParser.hostname + port
+          + "?lat=" + this.coords[0] + "&lng=" + this.coords[1];
+      }
+    },
+
+    mounted() {
+      let clipboard = this.initClipboard();
+
+      window.setTimeout(() => {
+        // 1초 지연을 줘서 Vue가 완전히 준비된 후 지도를 그리도록 합니다.
+        const mapContainer = document.querySelector("div#map");
+
+        // 쿼리스트링에 좌표가 포함되어 있다면, 지도 중앙 위치를 변경합니다.
+        vm.setCoordsFromQueryStringIfAny();
+
+        latLng = new naver.maps.LatLng(this.coords[0], this.coords[1]);
+        map = new naver.maps.Map(mapContainer);
+        marker = new naver.maps.Marker({
+          position: latLng,
+          map: map
+        });
+
+        naver.maps.Event.addListener(map, 'click', (evt) => {
+          // 클릭 이벤트 리스너를 등록합니다. 마우스 클릭으로 지도를 네비게이션할 때 주소와 좌표를 업데이트합니다.
+          // latLng = new daum.maps.LatLng(evt.latLng.getLat(), evt.latLng.getLng());
+          marker.setPosition(evt.latlng);
+          latLng = new naver.maps.LatLng(evt.coord.y, evt.coord.x);
+          vm.coords = [evt.coord.y, evt.coord.x];
+          vm.updateByCoords();
+        });
+      }, 1000);
+    }
+  });
+
+  // Google Analytics
+  (function (i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function () {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+    a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+  ga('create', 'UA-105314165-1', 'auto');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

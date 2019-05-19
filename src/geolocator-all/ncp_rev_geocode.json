@@ -1,0 +1,433 @@
+{
+  "v2": {
+    "status": {
+      "code": 0,
+      "name": "ok",
+      "message": "done"
+    },
+    "results": [
+      {
+        "name": "countrycode",
+        "code": {
+          "id": "410",
+          "type": "",
+          "mappingId": ""
+        },
+        "region": {
+          "area0": {
+            "name": "대한민국",
+            "coords": {
+              "center": {
+                "crs": "",
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "area1": {
+            "coords": {
+              "center": {
+                "crs": "",
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "area2": {
+            "coords": {
+              "center": {
+                "crs": "",
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "area3": {
+            "coords": {
+              "center": {
+                "crs": "",
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "area4": {
+            "coords": {
+              "center": {
+                "crs": "",
+                "x": 0,
+                "y": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "legalcode",
+        "code": {
+          "id": "1111013500",
+          "type": "L",
+          "mappingId": "09110135"
+        },
+        "region": {
+          "area0": {
+            "name": "kr",
+            "coords": {
+              "center": {
+                "crs": "",
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "area1": {
+            "name": "서울특별시",
+            "coords": {
+              "center": {
+                "crs": "EPSG:4326",
+                "x": 126.978388,
+                "y": 37.56661
+              }
+            },
+            "alias": "서울"
+          },
+          "area2": {
+            "name": "종로구",
+            "coords": {
+              "center": {
+                "crs": "EPSG:4326",
+                "x": 126.979642,
+                "y": 37.573033
+              }
+            }
+          },
+          "area3": {
+            "name": "관철동",
+            "coords": {
+              "center": {
+                "crs": "EPSG:4326",
+                "x": 126.985973,
+                "y": 37.569107
+              }
+            }
+          },
+          "area4": {
+            "name": "",
+            "coords": {
+              "center": {
+                "crs": "",
+                "x": 0,
+                "y": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "addr",
+        "code": {
+          "id": "1111013500",
+          "type": "L",
+          "mappingId": "09110135"
+        },
+        "region": {
+          "area0": {
+            "name": "kr",
+            "coords": {
+              "center": {
+                "crs": "",
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "area1": {
+            "name": "서울특별시",
+            "coords": {
+              "center": {
+                "crs": "EPSG:4326",
+                "x": 126.978388,
+                "y": 37.56661
+              }
+            },
+            "alias": "서울"
+          },
+          "area2": {
+            "name": "종로구",
+            "coords": {
+              "center": {
+                "crs": "EPSG:4326",
+                "x": 126.979642,
+                "y": 37.573033
+              }
+            }
+          },
+          "area3": {
+            "name": "관철동",
+            "coords": {
+              "center": {
+                "crs": "EPSG:4326",
+                "x": 126.985973,
+                "y": 37.569107
+              }
+            }
+          },
+          "area4": {
+            "name": "",
+            "coords": {
+              "center": {
+                "crs": "",
+                "x": 0,
+                "y": 0
+              }
+            }
+          }
+        },
+        "land": {
+          "type": "1",
+          "number1": "19",
+          "number2": "6",
+          "addition0": {
+            "type": "",
+            "value": ""
+          },
+          "addition1": {
+            "type": "",
+            "value": ""
+          },
+          "addition2": {
+            "type": "",
+            "value": ""
+          },
+          "addition3": {
+            "type": "",
+            "value": ""
+          },
+          "addition4": {
+            "type": "",
+            "value": ""
+          },
+          "coords": {
+            "center": {
+              "crs": "",
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      {
+        "name": "roadaddr",
+        "code": {
+          "id": "1111013500",
+          "type": "L",
+          "mappingId": "09110135"
+        },
+        "region": {
+          "area0": {
+            "name": "kr",
+            "coords": {
+              "center": {
+                "crs": "",
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "area1": {
+            "name": "서울특별시",
+            "coords": {
+              "center": {
+                "crs": "EPSG:4326",
+                "x": 126.978388,
+                "y": 37.56661
+              }
+            },
+            "alias": "서울"
+          },
+          "area2": {
+            "name": "종로구",
+            "coords": {
+              "center": {
+                "crs": "EPSG:4326",
+                "x": 126.979642,
+                "y": 37.573033
+              }
+            }
+          },
+          "area3": {
+            "name": "관철동",
+            "coords": {
+              "center": {
+                "crs": "EPSG:4326",
+                "x": 126.985973,
+                "y": 37.569107
+              }
+            }
+          },
+          "area4": {
+            "name": "",
+            "coords": {
+              "center": {
+                "crs": "",
+                "x": 0,
+                "y": 0
+              }
+            }
+          }
+        },
+        "land": {
+          "type": "",
+          "number1": "36",
+          "number2": "",
+          "addition0": {
+            "type": "building",
+            "value": ""
+          },
+          "addition1": {
+            "type": "zipcode",
+            "value": "03189"
+          },
+          "addition2": {
+            "type": "roadGroupCode",
+            "value": "111104100140"
+          },
+          "addition3": {
+            "type": "",
+            "value": ""
+          },
+          "addition4": {
+            "type": "",
+            "value": ""
+          },
+          "name": "삼일대로17길",
+          "coords": {
+            "center": {
+              "crs": "",
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      },
+      {
+        "name": "admcode",
+        "code": {
+          "id": "1111061500",
+          "type": "A",
+          "mappingId": "09110615"
+        },
+        "region": {
+          "area0": {
+            "name": "kr",
+            "coords": {
+              "center": {
+                "crs": "",
+                "x": 0,
+                "y": 0
+              }
+            }
+          },
+          "area1": {
+            "name": "서울특별시",
+            "coords": {
+              "center": {
+                "crs": "EPSG:4326",
+                "x": 126.978388,
+                "y": 37.56661
+              }
+            },
+            "alias": "서울"
+          },
+          "area2": {
+            "name": "종로구",
+            "coords": {
+              "center": {
+                "crs": "EPSG:4326",
+                "x": 126.979642,
+                "y": 37.573033
+              }
+            }
+          },
+          "area3": {
+            "name": "종로1.2.3.4가동",
+            "coords": {
+              "center": {
+                "crs": "EPSG:4326",
+                "x": 126.990262,
+                "y": 37.574461
+              }
+            }
+          },
+          "area4": {
+            "name": "",
+            "coords": {
+              "center": {
+                "crs": "",
+                "x": 0,
+                "y": 0
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "result": {
+    "total": 3,
+    "userquery": "126.9854245,37.5692551",
+    "items": [
+      {
+        "addrdetail": {
+          "country": "대한민국",
+          "sido": "서울특별시",
+          "sigugun": "종로구",
+          "dongmyun": "관철동",
+          "ri": "",
+          "rest": "19-6"
+        },
+        "point": {
+          "x": 0,
+          "y": 0
+        },
+        "address": "서울특별시 종로구 관철동 19-6",
+        "isRoadAddress": false,
+        "isAdmAddress": false
+      },
+      {
+        "addrdetail": {
+          "country": "대한민국",
+          "sido": "서울특별시",
+          "sigugun": "종로구",
+          "dongmyun": "삼일대로17길",
+          "ri": "",
+          "rest": "36"
+        },
+        "point": {
+          "x": 0,
+          "y": 0
+        },
+        "address": "서울특별시 종로구 삼일대로17길 36",
+        "isRoadAddress": true,
+        "isAdmAddress": false
+      },
+      {
+        "addrdetail": {
+          "country": "대한민국",
+          "sido": "서울특별시",
+          "sigugun": "종로구",
+          "dongmyun": "종로1.2.3.4가동",
+          "ri": "",
+          "rest": "19-6"
+        },
+        "point": {
+          "x": 126.990262,
+          "y": 37.574461
+        },
+        "address": "서울특별시 종로구 종로1.2.3.4가동 19-6",
+        "isRoadAddress": false,
+        "isAdmAddress": true
+      }
+    ]
+  }
+}

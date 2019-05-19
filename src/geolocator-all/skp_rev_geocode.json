@@ -1,0 +1,52 @@
+{
+  "data": {
+    "addressInfo": {
+      "fullAddress": "서울특별시 중구 소공동,서울특별시 중구 정동 1-16,서울특별시 중구 세종대로21길 33 조선일보사",
+      "addressType": "A10",
+      "city_do": "서울특별시",
+      "gu_gun": "중구",
+      "eup_myun": "",
+      "adminDong": "소공동",
+      "adminDongCode": "1114052000",
+      "legalDong": "정동",
+      "legalDongCode": "1114016700",
+      "ri": "",
+      "bunji": "1-16",
+      "roadName": "세종대로21길",
+      "buildingIndex": "33",
+      "buildingName": "조선일보사",
+      "mappingDistance": "11.497988765092922",
+      "roadCode": "111404103195"
+    }
+  },
+  "status": 200,
+  "statusText": "OK",
+  "headers": {
+    "content-language": "ko",
+    "content-type": "application/json;charset=utf-8"
+  },
+  "config": {
+    "transformRequest": {},
+    "transformResponse": {},
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "headers": {
+      "Accept": "application/json, text/plain, */*"
+    },
+    "method": "get",
+    "params": {
+      "version": "1",
+      "format": "json",
+      "callback": "result",
+      "coordType": "WGS84GEO",
+      "addressType": "A10",
+      "lon": 126.9753388,
+      "lat": 37.5678947,
+      "appKey": "abc5e5c0-ce99-4f7f-8d54-c9eb3c528b2d"
+    },
+    "url": "https://api2.sktelecom.com/tmap/geo/reversegeocoding"
+  },
+  "request": {}
+}

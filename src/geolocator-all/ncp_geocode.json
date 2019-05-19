@@ -1,0 +1,133 @@
+{
+  "v2": {
+    "status": "OK",
+    "meta": {
+      "totalCount": 1,
+      "page": 1,
+      "count": 1
+    },
+    "addresses": [
+      {
+        "roadAddress": "서울특별시 중구 을지로 30 롯데호텔",
+        "jibunAddress": "서울특별시 중구 소공동 1 롯데호텔",
+        "englishAddress": "30, Eulji-ro, Jung-gu, Seoul, Republic of Korea",
+        "addressElements": [
+          {
+            "types": [
+              "SIDO"
+            ],
+            "longName": "서울특별시",
+            "shortName": "서울특별시",
+            "code": ""
+          },
+          {
+            "types": [
+              "SIGUGUN"
+            ],
+            "longName": "중구",
+            "shortName": "중구",
+            "code": ""
+          },
+          {
+            "types": [
+              "DONGMYUN"
+            ],
+            "longName": "소공동",
+            "shortName": "소공동",
+            "code": ""
+          },
+          {
+            "types": [
+              "RI"
+            ],
+            "longName": "",
+            "shortName": "",
+            "code": ""
+          },
+          {
+            "types": [
+              "ROAD_NAME"
+            ],
+            "longName": "을지로",
+            "shortName": "을지로",
+            "code": ""
+          },
+          {
+            "types": [
+              "BUILDING_NUMBER"
+            ],
+            "longName": "30",
+            "shortName": "30",
+            "code": ""
+          },
+          {
+            "types": [
+              "BUILDING_NAME"
+            ],
+            "longName": "롯데호텔",
+            "shortName": "롯데호텔",
+            "code": ""
+          },
+          {
+            "types": [
+              "LAND_NUMBER"
+            ],
+            "longName": "1",
+            "shortName": "1",
+            "code": ""
+          },
+          {
+            "types": [
+              "POSTAL_CODE"
+            ],
+            "longName": "04533",
+            "shortName": "04533",
+            "code": ""
+          }
+        ],
+        "x": "126.9810887",
+        "y": "37.5648228",
+        "distance": 0
+      }
+    ],
+    "errorMessage": ""
+  },
+  "result": {
+    "total": 2,
+    "userquery": "서울특별시 중구 소공동 1",
+    "items": [
+      {
+        "address": "서울특별시 중구 소공동 1 롯데호텔",
+        "addrdetail": {
+          "country": "대한민국",
+          "sido": "서울특별시",
+          "sigugun": "중구",
+          "dongmyun": "소공동",
+          "ri": "",
+          "rest": "1 롯데호텔"
+        },
+        "isRoadAddress": false,
+        "point": {
+          "x": "126.9810887",
+          "y": "37.5648228"
+        }
+      },
+      {
+        "address": "서울특별시 중구 을지로 30 롯데호텔",
+        "addrdetail": {
+          "country": "대한민국",
+          "sido": "서울특별시",
+          "sigugun": "중구",
+          "dongmyun": "을지로",
+          "ri": "",
+          "rest": "30 롯데호텔"
+        },
+        "isRoadAddress": true,
+        "point": {
+          "x": "126.9810887",
+          "y": "37.5648228"
+        }
+      }
+    ]
+  }
+}
