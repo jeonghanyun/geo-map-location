@@ -12,7 +12,7 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
-const unwatch = store.watch((state) => {
+store.watch((state) => {
   return state.error
 }, (msg) => {
   if (!msg) {
