@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <!-- project: https://developers.kakao.com/console/app/139671 -->
+    <!-- guide: https://apis.map.kakao.com/web/guide/ -->
+    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=25ac2264842edf6e89876d76d479fb70&libraries=services"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app" class="container"></div>
+    <div id="alert"></div>
+    <!-- built files will be auto injected -->
+  </body>
+</html>
