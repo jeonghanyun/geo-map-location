@@ -13,10 +13,10 @@
 import { defineProps } from 'vue'
 import TextField from '@/components/TextField.vue'
 
-const props = defineProps<{
+defineProps<{
   id: string,
   modelValue: string
 }>()
 
-new window.Clipboard('.btn')
+const clipboard = new window.Clipboard('.btn')
 </script>

@@ -16,8 +16,14 @@ const geoService = new GeoService()
 
 let container = null
 let center = null
-let map = null
-let marker = null
+let map: {
+  setCenter: (center: any) => void
+  addControl: (control: any, position: any) => void
+  setCopyrightPosition: (postion: any, show: boolean) => void
+} = null
+let marker: {
+  setPosition: (position: any) => void
+} = null
 
 store.watch((state) => {
   return state.address
@@ -48,7 +54,10 @@ onMounted(() => {
     dgrggable: true
   })
 
-  window.kakao.maps.event.addListener(map, 'click', (evt) => {
+  map.addControl(new window.kakao.maps.MapTypeControl(), window.kakao.maps.ControlPosition.TOPRIGHT)
+  map.setCopyrightPosition(window.kakao.maps.CopyrightPosition.BOTTOMRIGHT, true)
+
+  window.kakao.maps.event.addListener(map, 'click', (evt: { latLng: { getLat: () => string, getLng: () => string } }) => {
     // 클릭 이벤트 핸들러를 등록한다
     geoService.updateStateByCoords(evt.latLng.getLng(), evt.latLng.getLat())
   })

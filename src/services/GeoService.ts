@@ -3,7 +3,10 @@ import { KakaoAddress } from '@/models/KakaoAddress'
 import { Address } from '@/models/Address'
 
 export class GeoService {
-  private geocoder
+  private geocoder: {
+    addressSearch: (input: string, callback: (result: KakaoAddress[], status: string) => void) => void,
+    coord2Address: (x: string, y: string, callback: (result: KakaoAddress[], status: string) => void) => void
+  }
 
   constructor() {
     // @see https://apis.map.kakao.com/web/documentation/#services_Geocoder
