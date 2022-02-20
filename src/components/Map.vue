@@ -37,7 +37,8 @@ onMounted(() => {
 
   // @see https://apis.map.kakao.com/web/documentation/#Map
   map = new window.kakao.maps.Map(container, {
-    center: center
+    center: center,
+    level: 4
   })
 
   // @see https://apis.map.kakao.com/web/documentation/#Marker

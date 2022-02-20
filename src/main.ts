@@ -6,7 +6,8 @@ declare global {
   // @workaround for "kakao is not defined"
   // @see https://leonkong.cc/posts/react-kakao-maps.html
   interface Window {
-    kakao: any;
+    kakao: any
+    Clipboard: any
   }
 }
 

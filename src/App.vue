@@ -26,10 +26,32 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { GeoService } from '@/services/GeoService'
 import Control from '@/components/Control.vue'
 import Display from '@/components/Display.vue'
 import Map from '@/components/Map.vue'
 import Alert from '@/components/Alert.vue'
+
+const store = useStore()
+
+onMounted(() => {
+  const queryString = window.location.search.substring(1)
+  if (queryString.length === 0) {
+    return
+  }
+
+  const queries = queryString.match(/x=([0-9]+\.[0-9]+)&y=([0-9]+\.[0-9]+)/)
+  if (queries === null || queries.length < 3) {
+    // queryes = ["x=126.975&y=37.566&", "37.566", "126.975"]
+    store.commit('setError', `url에 포함된 x, y 형식이 틀립니다: ${queryString}`)
+    return
+  }
+
+  const geoService = new GeoService()
+  geoService.updateStateByCoords(queries[1], queries[2])
+})
 </script>
 
 <style>
