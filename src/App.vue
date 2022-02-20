@@ -7,15 +7,19 @@
       <li><small>건물이 있는 위치를 선택했을때만 도로명이 출력됩니다.</small></li>
     </ul>
   </div>
+
   <div class="row">
     <Control/>
   </div>
+
   <div class="row">
     <Display/>
   </div>
+
   <div class="row">
     <Map/>
   </div>
+
   <teleport to="#alert">
     <Alert/>
   </teleport>
@@ -34,6 +38,8 @@ import Alert from '@/components/Alert.vue'
 body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  height: 100%;
 }
 
 #app {

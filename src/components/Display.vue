@@ -10,6 +10,7 @@
       <span class="label label-primary">도로명주소</span>{{ store.state.address.roadAddress }}
     </span>
   </p>
+
   <p style="font-size: 0.8em">
     <span v-if="store.state.address.zipCode">
       <span class="label label-default">우편번호</span> {{ store.state.address.zipCode }}

@@ -1,10 +1,10 @@
 <template>
   <form class="form-horizontal">
     <div class="form-group col-md-4">
-      <TextField id="address" v-model="address" @keyup.enter="updateByAddress"/>
+      <TextField id="inputAddress" v-model="inputAddress" @keyup.enter="updateByAddress"/>
     </div>
     <div class="form-group col-md-4">
-      <TextField id="coords" v-model="coords" @keyup.enter="updateByCoords"/>
+      <TextField id="coordsStr" v-model="coordsStr" @keyup.enter="updateByCoords"/>
     </div>
     <div class="form-group col-md-4">
       <CopyableTextField id="url" v-model="url"/>
@@ -13,28 +13,34 @@
 </template>
 
 <script setup lang="ts">
-import TextField from '@/components/TextField.vue'
-import CopyableTextField from '@/components/CopyableTextField'
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { Address } from '@/models/Address'
+import { GeoService } from '@/services/GeoService'
+import TextField from '@/components/TextField.vue'
+import CopyableTextField from '@/components/CopyableTextField'
 
-// data
 const store = useStore()
-const address = ref<Address>(store.state.address.legalAddress)
-const coords = computed(() => {
-  return `${store.state.address.coords.x},${store.state.address.coords.y}`
+const inputAddress = ref<Address>(store.state.address.legalAddress)
+const coordsStr = ref<string>(`${store.state.address.coords.x},${store.state.address.coords.y}`)
+const geoService = new GeoService()
+
+store.watch((state) => {
+  return state.address
+}, (address) => {
+  inputAddress.value = address.legalAddress
+  coordsStr.value = `${address.coords.x},${address.coords.y}`
 })
 
 const updateByAddress = () => {
-  console.log('updateByAddress invoked:', address.value)
-}
-const updateByCoords = () => {
-  const part = coords.value.split(',')
-  console.log('updateByAddress invoked:', 'x:', part[0], 'y:', part[1])
+  geoService.updateStateByAddress(inputAddress.value)
 }
 
-// computed
+const updateByCoords = () => {
+  const part = coordsStr.value.split(',')
+  geoService.updateStateByCoords(part[0], part[1])
+}
+
 const url = computed(() => {
   const urlParser = document.createElement('a')
   urlParser.href = window.location.href

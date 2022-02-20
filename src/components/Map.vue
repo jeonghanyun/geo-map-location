@@ -1,6 +1,6 @@
 <template>
   <div class="panel panel-default">
-    <div class="map_wrap pannel-body">
+    <div class="map-wrapper pannel-body">
       <div id="map"></div>
     </div>
   </div>
@@ -11,7 +11,6 @@ import { useStore } from 'vuex'
 import { onMounted } from 'vue'
 import { GeoService } from '@/services/GeoService'
 
-const kakao = window.kakao
 const store = useStore()
 const geoService = new GeoService()
 
@@ -20,39 +19,43 @@ let center = null
 let map = null
 let marker = null
 
+store.watch((state) => {
+  return state.address
+}, (address) => {
+  center = new window.kakao.maps.LatLng(address.coords.y, address.coords.x)
+  map.setCenter(center)
+  marker.setPosition(center)
+}, {
+  deep: true
+})
+
 onMounted(() => {
   container = document.querySelector('div#map')
+
   // @see https://apis.map.kakao.com/web/documentation/#LatLng
-  center = new kakao.maps.LatLng(store.state.address.coords.y, store.state.address.coords.x)
+  center = new window.kakao.maps.LatLng(store.state.address.coords.y, store.state.address.coords.x)
 
   // @see https://apis.map.kakao.com/web/documentation/#Map
-  map = new kakao.maps.Map(container, {
-    center: center,
-    level: 3
+  map = new window.kakao.maps.Map(container, {
+    center: center
   })
 
-  // 지도 중앙에 마커를 표시한다
   // @see https://apis.map.kakao.com/web/documentation/#Marker
-  marker = new kakao.maps.Marker({
+  marker = new window.kakao.maps.Marker({
     map: map,
-    position: center
+    position: center,
+    dgrggable: true
   })
 
-  window.kakao.maps.event.addListener(map, 'click', (evt) => {
-    // 클릭 이벤트 리스너를 등록한다
-    console.log('x:', evt.latLng.getLng(), 'y:', evt.latLng.getLat())
-    center = new kakao.maps.LatLng(evt.latLng.getLat(), evt.latLng.getLng())
-    map.setCenter(center)
-    marker.setPosition(center)
-
-    // store를 업데이트 한다
+  window.window.kakao.maps.event.addListener(map, 'click', (evt) => {
+    // 클릭 이벤트 핸들러를 등록한다
     geoService.updateStateByCoords(evt.latLng.getLng(), evt.latLng.getLat())
   })
 })
 </script>
 
 <style scoped>
-.map_wrap {
+.map-wrapper {
   position: relative;
   width: 100%;
   height: 480px;
@@ -62,6 +65,5 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   position: relative;
-  overflow: hidden;
 }
 </style>

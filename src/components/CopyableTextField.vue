@@ -10,8 +10,8 @@
 </template>
 
 <script setup lang="ts">
-import TextField from '@/components/TextField.vue'
 import { defineProps } from 'vue'
+import TextField from '@/components/TextField.vue'
 
 const props = defineProps<{
   id: string,

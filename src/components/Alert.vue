@@ -11,6 +11,19 @@
 import { useStore } from 'vuex'
 
 const store = useStore()
+
+const unwatch = store.watch((state) => {
+  return state.error
+}, (msg) => {
+  if (!msg) {
+    return
+  }
+
+  setTimeout(() => {
+    // 에러 메시지를 3초 동안 노출한다
+    store.commit('setError', null)
+  }, 3000)
+})
 </script>
 
 <style scoped>

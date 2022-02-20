@@ -12,7 +12,7 @@ export class GeoService {
 
   updateStateByAddress(input: string): void {
     // @see https://apis.map.kakao.com/web/documentation/#services_Geocoder_addressSearch
-    this.geocoder.addressSearch(input, (result, status) => {
+    this.geocoder.addressSearch(input, (result: KakaoAddress[], status: string) => {
       if (status === window.kakao.maps.services.Status.OK) {
         const src: KakaoAddress = result[0]
         store.commit('setAddress', this.map(src))
@@ -24,10 +24,12 @@ export class GeoService {
 
   updateStateByCoords(x: string, y: string): void {
     // @see https://apis.map.kakao.com/web/documentation/#services_Geocoder_coord2Address
-    this.geocoder.coord2Address(x, y, (result, status) => {
+    this.geocoder.coord2Address(x, y, (result: KakaoAddress[], status: string) => {
       if (status === window.kakao.maps.services.Status.OK) {
         const src: KakaoAddress = result[0]
-        store.commit('setAddress', this.map(src, x, y))
+        const address = this.map(src, x, y)
+        // 역지오코드 결과로 맵핑한 Address 객체는 완전하지 않으므로, 다시 지오코드해서 맵핑한다
+        this.updateStateByAddress(address.legalAddress!)
       } else {
         store.commit('setError', `좌표 검색 실패: ${status}`)
       }
