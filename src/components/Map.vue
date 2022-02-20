@@ -48,7 +48,7 @@ onMounted(() => {
     dgrggable: true
   })
 
-  window.window.kakao.maps.event.addListener(map, 'click', (evt) => {
+  window.kakao.maps.event.addListener(map, 'click', (evt) => {
     // 클릭 이벤트 핸들러를 등록한다
     geoService.updateStateByCoords(evt.latLng.getLng(), evt.latLng.getLat())
   })

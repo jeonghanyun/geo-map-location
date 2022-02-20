@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, onMounted } from 'vue'
+import { defineProps } from 'vue'
 import TextField from '@/components/TextField.vue'
 
 const props = defineProps<{
@@ -18,5 +18,5 @@ const props = defineProps<{
   modelValue: string
 }>()
 
-const clipboard = new window.Clipboard('.btn')
+new window.Clipboard('.btn')
 </script>
