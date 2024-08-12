@@ -15,13 +15,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
-import { Address } from '@/models/Address'
+import { CoordsAddress } from '@/models/Address'
 import { GeoService } from '@/services/GeoService'
 import TextField from '@/components/TextField.vue'
 import CopyableTextField from '@/components/CopyableTextField'
 
 const store = useStore()
-const inputAddress = ref<Address>(store.state.address.legalAddress)
+const inputAddress = ref<CoordsAddress>(store.state.address.legalAddress)
 const coordsStr = ref<string>(`${store.state.address.coords.x},${store.state.address.coords.y}`)
 const geoService = new GeoService()
 

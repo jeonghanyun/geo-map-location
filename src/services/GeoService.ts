@@ -50,6 +50,10 @@ export class GeoService {
       }
     }
 
+    // if (src.address.region_1depth_name) {
+    //   address.region1DepthName = src.address.region_1depth_name
+    // }
+
     if (src.address.region_3depth_h_name) {
       address.adminAddress = src.address.address_name.replace(src.address.region_3depth_name, src.address.region_3depth_h_name)
     }
