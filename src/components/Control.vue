@@ -18,7 +18,7 @@ import { useStore } from 'vuex'
 import { CoordsAddress } from '@/models/Address'
 import { GeoService } from '@/services/GeoService'
 import TextField from '@/components/TextField.vue'
-import CopyableTextField from '@/components/CopyableTextField'
+import CopyableTextField from '@/components/CopyableTextField.vue'
 
 const store = useStore()
 const inputAddress = ref<CoordsAddress>(store.state.address.legalAddress)

@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import { Address } from '@/models/Address'
+import { CoordsAddress } from '@/models/Address'
 import { Coords } from '@/models/Coords'
 
 export default createStore({
@@ -17,12 +17,12 @@ export default createStore({
         x: '126.975653509532',
         y: '37.5643639030785'
       } as Coords
-    } as Address,
+    } as CoordsAddress,
     error: null as string | null
   },
 
   mutations: {
-    setAddress(state, address: Address) {
+    setAddress(state, address: CoordsAddress) {
       state.address = address
     },
     setError(state, error: string | null) {

@@ -1,6 +1,6 @@
 import store from '@/store'
 import { KakaoAddress } from '@/models/KakaoAddress'
-import { Address } from '@/models/Address'
+import { CoordsAddress } from '@/models/Address'
 
 export class GeoService {
   private geocoder: {
@@ -18,6 +18,7 @@ export class GeoService {
     this.geocoder.addressSearch(input, (result: KakaoAddress[], status: string) => {
       if (status === window.kakao.maps.services.Status.OK) {
         const src: KakaoAddress = result[0]
+        console.log(src)
         store.commit('setAddress', this.map(src))
       } else {
         store.commit('setError', `주소 검색 실패: ${status}`)
@@ -39,8 +40,8 @@ export class GeoService {
     })
   }
 
-  private map(src: KakaoAddress, x?: string, y?: string): Address {
-    const address: Address = {
+  private map(src: KakaoAddress, x?: string, y?: string): CoordsAddress {
+    const address: CoordsAddress = {
       legalAddress: src.address.address_name,
       legalCode: src.address.b_code,
       adminCode: src.address.h_code,
@@ -50,10 +51,19 @@ export class GeoService {
       }
     }
 
-    // if (src.address.region_1depth_name) {
-    //   address.region1DepthName = src.address.region_1depth_name
-    // }
-
+    console.log('123456789' + src.address.region_1depth_name)
+    if (src.address) {
+      address.region1DepthName = src.address.region_1depth_name || undefined
+      address.region2DepthName = src.address.region_2depth_name || undefined
+      address.region3DepthName = src.address.region_3depth_name || undefined
+      address.region3DepthHName = src.address.region_3depth_h_name || undefined
+    }
+    if (src.road_address) {
+      address.roadRegion1DepthName = src.road_address.region_1depth_name || undefined
+      address.roadRegion2DepthName = src.road_address.region_2depth_name || undefined
+      address.roadRegion3DepthName = src.road_address.region_3depth_name || undefined
+      address.roadRegion4DepthName = src.road_address.region_4depth_name || undefined
+    }
     if (src.address.region_3depth_h_name) {
       address.adminAddress = src.address.address_name.replace(src.address.region_3depth_name, src.address.region_3depth_h_name)
     }
