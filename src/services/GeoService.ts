@@ -57,12 +57,20 @@ export class GeoService {
       address.region2DepthName = src.address.region_2depth_name || undefined
       address.region3DepthName = src.address.region_3depth_name || undefined
       address.region3DepthHName = src.address.region_3depth_h_name || undefined
+      address.mountainYn = src.address.mountain_yn || undefined
+      address.mainAddressNo = src.address.main_address_no || undefined
+      address.subAddressNo = src.address.sub_address_no || undefined
     }
     if (src.road_address) {
       address.roadRegion1DepthName = src.road_address.region_1depth_name || undefined
       address.roadRegion2DepthName = src.road_address.region_2depth_name || undefined
       address.roadRegion3DepthName = src.road_address.region_3depth_name || undefined
       address.roadRegion4DepthName = src.road_address.region_4depth_name || undefined
+      address.roadRegionMainBuildingNo = src.road_address.main_building_no || undefined
+      address.roadRegionSubBuildingNo = src.road_address.sub_building_no || undefined
+      address.roadRegionUndergroundYn = src.road_address.underground_yn || undefined
+      address.roadRegionRoadName = src.road_address.road_name || undefined
+      address.roadRegionBuildingName = src.road_address.building_name || undefined
     }
     if (src.address.region_3depth_h_name) {
       address.adminAddress = src.address.address_name.replace(src.address.region_3depth_name, src.address.region_3depth_h_name)

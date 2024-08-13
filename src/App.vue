@@ -1,11 +1,11 @@
 <template>
   <div class="row">
     <h2 class="page-header">주소/좌표로 위치 확인하기</h2>
-    <ul class="help-block">
-      <li><small>입력창에 주소 또는 좌표를 입력하고 엔터를 눌러 지도상의 위치를 확인할 수 있습니다.</small></li>
-      <li><small>반대로 마우스로 지도상의 위치를 클릭하여 주소, 좌표, 행정구역코드를 확인할 수 있습니다.</small></li>
-      <li><small>건물이 있는 위치를 선택했을때만 도로명이 출력됩니다.</small></li>
-    </ul>
+<!--    <ul class="help-block">-->
+<!--      <li><small>입력창에 주소 또는 좌표를 입력하고 엔터를 눌러 지도상의 위치를 확인할 수 있습니다.</small></li>-->
+<!--      <li><small>반대로 마우스로 지도상의 위치를 클릭하여 주소, 좌표, 행정구역코드를 확인할 수 있습니다.</small></li>-->
+<!--      <li><small>건물이 있는 위치를 선택했을때만 도로명이 출력됩니다.</small></li>-->
+<!--    </ul>-->
   </div>
 
   <div class="row">
@@ -18,6 +18,10 @@
 
   <div class="row">
     <Map/>
+  </div>
+
+  <div class="row">
+    <JsonConverter/>
   </div>
 
   <teleport to="#alert">
@@ -33,6 +37,7 @@ import Control from '@/components/Control.vue'
 import Display from '@/components/Display.vue'
 import Map from '@/components/Map.vue'
 import Alert from '@/components/Alert.vue'
+import JsonConverter from '@/components/JsonConverter.vue'
 
 const store = useStore()
 

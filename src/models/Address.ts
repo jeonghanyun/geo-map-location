@@ -11,7 +11,15 @@ export class CoordsAddress {
   roadRegion2DepthName?: string
   roadRegion3DepthName?: string
   roadRegion4DepthName?: string
+  mainAddressNo?: string
+  subAddressNo?: string
+  roadRegionUndergroundYn?: string
+  mountainYn?: string
   roadAddress?: string
+  roadRegionMainBuildingNo?: string
+  roadRegionSubBuildingNo?: string
+  roadRegionRoadName?: string
+  roadRegionBuildingName?: string
   zipCode?: string
   legalCode?: string
   adminCode?: string
@@ -21,7 +29,10 @@ export class CoordsAddress {
   constructor(legalAddress: string,
     region1DepthName: string, region2DepthName: string, region3DepthName: string, region3DepthHName: string,
     roadRegion1DepthName: string, roadRegion2DepthName: string, roadRegion3DepthName: string, roadRegion4DepthName: string,
-    adminAddress: string, roadAddress: string, zipCode: string, legalCode: string, adminCode: string, roadCode: string, coords: Coords) {
+    mainAddressNo: string, subAddressNo: string, roadRegionUndergroundYn: string,
+    roadRegionMainBuildingNo: string, roadRegionSubBuildingNo: string, roadRegionRoadName: string,
+    roadRegionBuildingName: string,
+    adminAddress: string, mountainYn: string, roadAddress: string, zipCode: string, legalCode: string, adminCode: string, roadCode: string, coords: Coords) {
     this.legalAddress = legalAddress
     this.adminAddress = adminAddress
     this.region1DepthName = region1DepthName
@@ -32,6 +43,14 @@ export class CoordsAddress {
     this.roadRegion2DepthName = roadRegion2DepthName
     this.roadRegion3DepthName = roadRegion3DepthName
     this.roadRegion4DepthName = roadRegion4DepthName
+    this.roadRegionMainBuildingNo = roadRegionMainBuildingNo
+    this.roadRegionSubBuildingNo = roadRegionSubBuildingNo
+    this.roadRegionRoadName = roadRegionRoadName
+    this.roadRegionBuildingName = roadRegionBuildingName
+    this.mainAddressNo = mainAddressNo
+    this.subAddressNo = subAddressNo
+    this.roadRegionUndergroundYn = roadRegionUndergroundYn
+    this.mountainYn = mountainYn
     this.roadAddress = roadAddress
     this.zipCode = zipCode
     this.legalCode = legalCode

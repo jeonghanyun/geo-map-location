@@ -21,6 +21,8 @@ export interface KakaoAddress {
     region_3depth_name: string,
     // eslint-disable-next-line camelcase
     sub_address_no: string,
+    // eslint-disable-next-line camelcase
+    underground_yn: 'Y' | 'N',
     x?: string,
     y?: string
   }
