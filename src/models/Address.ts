@@ -25,6 +25,8 @@ export class CoordsAddress {
   adminCode?: string
   roadCode?: string
   coords?: Coords
+  lat?: string
+  lng?: string
 
   constructor(legalAddress: string,
     region1DepthName: string, region2DepthName: string, region3DepthName: string, region3DepthHName: string,
@@ -32,7 +34,9 @@ export class CoordsAddress {
     mainAddressNo: string, subAddressNo: string, roadRegionUndergroundYn: string,
     roadRegionMainBuildingNo: string, roadRegionSubBuildingNo: string, roadRegionRoadName: string,
     roadRegionBuildingName: string,
-    adminAddress: string, mountainYn: string, roadAddress: string, zipCode: string, legalCode: string, adminCode: string, roadCode: string, coords: Coords) {
+    lat: string, lng: string,
+    adminAddress: string, mountainYn: string, roadAddress: string, zipCode: string, legalCode: string, adminCode: string, roadCode: string, coords: Coords
+  ) {
     this.legalAddress = legalAddress
     this.adminAddress = adminAddress
     this.region1DepthName = region1DepthName
@@ -57,5 +61,7 @@ export class CoordsAddress {
     this.adminCode = adminCode
     this.roadCode = roadCode
     this.coords = coords
+    this.lat = lat
+    this.lng = lng
   }
 }

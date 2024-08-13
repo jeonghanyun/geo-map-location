@@ -60,6 +60,8 @@ export class GeoService {
       address.mountainYn = src.address.mountain_yn || undefined
       address.mainAddressNo = src.address.main_address_no || undefined
       address.subAddressNo = src.address.sub_address_no || undefined
+      address.lat = src.x ?? x
+      address.lng = src.y ?? y
     }
     if (src.road_address) {
       address.roadRegion1DepthName = src.road_address.region_1depth_name || undefined

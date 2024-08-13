@@ -2,26 +2,18 @@
   <div class="container">
     <div class="left-panel">
       <h2>JSON 예제 (편집 가능)</h2>
-      <textarea v-model="jsonExampleString" @input="updateJsonExample" rows="20" cols="50"></textarea>
+      <textarea class="json-input-textarea" v-model="jsonExampleString" @input="updateJsonExample" rows="20" cols="50"></textarea>
     </div>
-    <div class="right-panel">
+    <div class="right-panel" >
       <h2>결과</h2>
-      <pre>{{ JSON.stringify(filledJson, null, 2) }}</pre>
+      <pre class="json-input-textarea">{{ JSON.stringify(filledJson, null, 2) }}</pre>
     </div>
-<!--    <div class="input-panel">-->
-<!--      <h2>입력 필드</h2>-->
-<!--      <div v-for="(value, key) in placeholders" :key="key">-->
-<!--        <label>{{ key }}:</label>-->
-<!--        <input v-model="inputValues[key]" @input="updateFilledJson" />-->
-<!--      </div>-->
-<!--    </div>-->
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
-import { CoordsAddress } from '@/models/Address'
 import { GeoService } from '@/services/GeoService'
 
 const store = useStore()
@@ -42,20 +34,20 @@ const initializePlaceholdersAndInputs = () => {
     'region3DepthHName', 'mainAddressNo', 'mountainYn', 'legalAddress',
     'roadRegion1DepthName', 'roadRegion2DepthName', 'roadRegionRoadName',
     'roadRegionMainBuildingNo', 'roadRegionBuildingName', 'roadRegionUndergroundYn',
-    'roadAddress'
+    'roadAddress', 'lat', 'lng'
   ]
 
   fields.forEach(field => {
-    const key = `store.${field}`
-    placeholders[key] = ''
-    inputValues[key] = addressState[field] || ''
+    const storeKey = `store.${field}`
+    placeholders[storeKey] = ''
+    placeholders[field] = ''
+    inputValues[storeKey] = addressState[field] || ''
+    inputValues[field] = addressState[field] || ''
   })
 
-  // coords는 별도로 처리
-  placeholders['store.coords.x'] = ''
-  placeholders['store.coords.y'] = ''
-  inputValues['store.coords.x'] = addressState.coords?.x || ''
-  inputValues['store.coords.y'] = addressState.coords?.y || ''
+  // lat와 lng는 별도로 처리
+  inputValues.lat = addressState.coords?.y || ''
+  inputValues.lng = addressState.coords?.x || ''
 }
 
 // watch를 사용하여 store의 address 상태 변경을 추적합니다.
@@ -72,7 +64,8 @@ const filledJson = computed(() => {
         updateValues(value)
       } else if (typeof value === 'string' && value.match(/{{.*}}/)) {
         const placeholder = value.replace(/[{}]/g, '')
-        obj[key] = inputValues[placeholder] || ''
+        const withoutStore = placeholder.replace('store.', '')
+        obj[key] = inputValues[placeholder] || inputValues[withoutStore] || ''
       }
     }
   }
@@ -90,53 +83,54 @@ const updateJsonExample = () => {
 }
 
 const extractPlaceholders = (obj: any) => {
-  for (const [key, value] of Object.entries(obj)) {
+  for (const [, value] of Object.entries(obj)) {
     if (typeof value === 'object' && value !== null) {
       extractPlaceholders(value)
     } else if (typeof value === 'string' && value.match(/{{.*}}/)) {
       const placeholder = value.replace(/[{}]/g, '')
+      const withoutStore = placeholder.replace('store.', '')
       if (!placeholders[placeholder]) {
         placeholders[placeholder] = ''
         inputValues[placeholder] = inputValues[placeholder] || ''
       }
+      if (!placeholders[withoutStore]) {
+        placeholders[withoutStore] = ''
+        inputValues[withoutStore] = inputValues[withoutStore] || ''
+      }
     }
   }
-}
-
-const updateAddress = (address: string) => {
-  geoService.updateStateByAddress(address)
 }
 
 onMounted(() => {
   jsonExampleString.value = JSON.stringify({
     dest_address: {
       beonji_address: {
-        si_do: '{{store.region1DepthName}}',
-        si_gun_gu: '{{store.region2DepthName}}',
-        eup_myeon_dong_ri: '{{store.region3DepthName}}',
-        legal_dong: '{{store.region3DepthName}}',
-        legal_ri: '{{store.region4DepthName}}',
-        admin_dong: '{{store.region3DepthHName}}',
-        beonji: '{{store.mainAddressNo}}',
-        is_mountain: '{{store.mountainYn}}',
+        si_do: '{{region1DepthName}}',
+        si_gun_gu: '{{region2DepthName}}',
+        eup_myeon_dong_ri: '{{region3DepthName}}',
+        legal_dong: '{{region3DepthName}}',
+        legal_ri: '{{region4DepthName}}',
+        admin_dong: '{{region3DepthHName}}',
+        beonji: '{{mainAddressNo}}',
+        is_mountain: '{{mountainYn}}',
         detail_address: '',
         is_refined: 'false',
-        raw_address: '{{store.legalAddress}}'
+        raw_address: '{{legalAddress}}'
       },
       road_address: {
-        si_do: '{{store.roadRegion1DepthName}}',
-        si_gun_gu: '{{store.roadRegion2DepthName}}',
-        road_name: '{{store.roadRegionRoadName}}',
-        building_number: '{{store.roadRegionMainBuildingNo}}',
-        building_name: '{{store.roadRegionBuildingName}}',
-        is_basement: '{{store.roadRegionUndergroundYn}}',
+        si_do: '{{roadRegion1DepthName}}',
+        si_gun_gu: '{{roadRegion2DepthName}}',
+        road_name: '{{roadRegionRoadName}}',
+        building_number: '{{roadRegionMainBuildingNo}}',
+        building_name: '{{roadRegionBuildingName}}',
+        is_basement: '{{roadRegionUndergroundYn}}',
         detail_address: '',
         is_refined: 'false',
-        raw_address: '{{store.roadAddress}}'
+        raw_address: '{{roadAddress}}'
       },
       latlng: {
-        lat: '{{store.coords.y}}',
-        lng: '{{store.coords.x}}'
+        lat: '{{lat}}',
+        lng: '{{lng}}'
       }
     },
     caller: 'requestDelivery'
@@ -153,6 +147,9 @@ watch(jsonExampleString, updateJsonExample)
 .container {
   display: flex;
   flex-wrap: wrap;
+}
+.json-input-textarea {
+  height: 100%;
 }
 .left-panel, .right-panel, .address-panel {
   width: 45%;

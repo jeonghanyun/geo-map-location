@@ -68,7 +68,7 @@ onMounted(() => {
 .map-wrapper {
   position: relative;
   width: 100%;
-  height: 480px;
+  height: 780px;
 }
 
 #map {
