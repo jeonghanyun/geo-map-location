@@ -8,26 +8,13 @@
       <h2>결과</h2>
       <pre>{{ JSON.stringify(filledJson, null, 2) }}</pre>
     </div>
-    <div class="input-panel">
-      <h2>입력 필드</h2>
-      <div v-for="(value, key) in placeholders" :key="key">
-        <label>{{ key }}:</label>
-        <input v-model="inputValues[key]" @input="updateFilledJson" />
-      </div>
-    </div>
-    <div class="address-panel">
-      <h2>현재 주소 정보</h2>
-      <p>
-        <span class="label">시도:</span> {{ addressState.region1DepthName }}
-      </p>
-      <p>
-        <span class="label">시군구:</span> {{ addressState.region2DepthName }}
-      </p>
-      <p>
-        <span class="label">법정동:</span> {{ addressState.region3DepthName }}
-      </p>
-      <!-- 다른 주소 정보 필드들 추가 -->
-    </div>
+<!--    <div class="input-panel">-->
+<!--      <h2>입력 필드</h2>-->
+<!--      <div v-for="(value, key) in placeholders" :key="key">-->
+<!--        <label>{{ key }}:</label>-->
+<!--        <input v-model="inputValues[key]" @input="updateFilledJson" />-->
+<!--      </div>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -48,9 +35,33 @@ const inputValues = reactive({})
 // Store의 address 상태를 reactive로 만듭니다.
 const addressState = reactive(store.state.address)
 
+// placeholders와 inputValues를 초기화하는 함수
+const initializePlaceholdersAndInputs = () => {
+  const fields = [
+    'region1DepthName', 'region2DepthName', 'region3DepthName', 'region4DepthName',
+    'region3DepthHName', 'mainAddressNo', 'mountainYn', 'legalAddress',
+    'roadRegion1DepthName', 'roadRegion2DepthName', 'roadRegionRoadName',
+    'roadRegionMainBuildingNo', 'roadRegionBuildingName', 'roadRegionUndergroundYn',
+    'roadAddress'
+  ]
+
+  fields.forEach(field => {
+    const key = `store.${field}`
+    placeholders[key] = ''
+    inputValues[key] = addressState[field] || ''
+  })
+
+  // coords는 별도로 처리
+  placeholders['store.coords.x'] = ''
+  placeholders['store.coords.y'] = ''
+  inputValues['store.coords.x'] = addressState.coords?.x || ''
+  inputValues['store.coords.y'] = addressState.coords?.y || ''
+}
+
 // watch를 사용하여 store의 address 상태 변경을 추적합니다.
 watch(() => store.state.address, (newValue) => {
   Object.assign(addressState, newValue)
+  initializePlaceholdersAndInputs()
 }, { deep: true })
 
 const filledJson = computed(() => {
@@ -61,8 +72,7 @@ const filledJson = computed(() => {
         updateValues(value)
       } else if (typeof value === 'string' && value.match(/{{.*}}/)) {
         const placeholder = value.replace(/[{}]/g, '')
-        const storeValue = getStoreValue(placeholder)
-        obj[key] = storeValue !== undefined ? storeValue : (inputValues[placeholder] || '')
+        obj[key] = inputValues[placeholder] || ''
       }
     }
   }
@@ -87,17 +97,10 @@ const extractPlaceholders = (obj: any) => {
       const placeholder = value.replace(/[{}]/g, '')
       if (!placeholders[placeholder]) {
         placeholders[placeholder] = ''
-        inputValues[placeholder] = ''
+        inputValues[placeholder] = inputValues[placeholder] || ''
       }
     }
   }
-}
-
-const getStoreValue = (path: string) => {
-  return path.split('.').reduce((obj, key) => {
-    if (key === 'store') return addressState
-    return obj && obj[key] !== undefined ? obj[key] : undefined
-  }, {})
 }
 
 const updateAddress = (address: string) => {
@@ -139,6 +142,8 @@ onMounted(() => {
     caller: 'requestDelivery'
   }, null, 2)
   updateJsonExample()
+  initializePlaceholdersAndInputs()
+  console.log('Initial address state:', addressState)
 })
 
 watch(jsonExampleString, updateJsonExample)
