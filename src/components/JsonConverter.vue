@@ -1,10 +1,23 @@
 <template>
-  <div class="container">
+  <div class="container" @keydown.meta.s.prevent="saveTemplate" @keydown.ctrl.s.prevent="saveTemplate">
     <div class="left-panel">
-      <h2>JSON 예제 (편집 가능)</h2>
+      <h2>JSON 템플릿 관리</h2>
+      <div class="template-selection">
+        <select v-model="selectedTemplateId" @change="loadSelectedTemplate">
+          <option value="">새 템플릿 생성</option>
+          <option v-for="template in templates" :key="template.id" :value="template.id">
+            {{ template.name }} [{{ formatDate(template.updatedAt) }}]
+          </option>
+        </select>
+        <input v-model="currentTemplateName" @change="updateTemplateName" placeholder="템플릿 이름" />
+      </div>
+      <button @click="saveTemplate">템플릿 저장</button>
+      <button @click="deleteTemplate" :disabled="!selectedTemplateId">선택한 템플릿 삭제</button>
+<!--      <button @click="createNewTemplate">새 템플릿 생성</button>-->
+      <h3>JSON 예제 (편집 가능)</h3>
       <textarea class="json-input-textarea" v-model="jsonExampleString" @input="updateJsonExample" rows="20" cols="50"></textarea>
     </div>
-    <div class="right-panel" >
+    <div class="right-panel">
       <h2>결과</h2>
       <pre class="json-input-textarea">{{ JSON.stringify(filledJson, null, 2) }}</pre>
     </div>
@@ -14,15 +27,17 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
-import { GeoService } from '@/services/GeoService'
+import { v4 as uuidv4 } from 'uuid'
 
 const store = useStore()
-const geoService = new GeoService()
 
 const jsonExampleString = ref('')
 const jsonExample = ref({})
 const placeholders = reactive({})
 const inputValues = reactive({})
+const templates = ref([])
+const selectedTemplateId = ref('')
+const currentTemplateName = ref('')
 
 // Store의 address 상태를 reactive로 만듭니다.
 const addressState = reactive(store.state.address)
@@ -101,7 +116,92 @@ const extractPlaceholders = (obj: any) => {
   }
 }
 
-onMounted(() => {
+const formatDate = (date: string | Date) => {
+  const d = new Date(date)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+const loadTemplates = () => {
+  const storedTemplates = localStorage.getItem('jsonTemplates')
+  if (storedTemplates) {
+    templates.value = JSON.parse(storedTemplates)
+  } else {
+    const now = new Date().toISOString()
+    const defaultTemplateId = uuidv4()
+    templates.value = [{
+      id: defaultTemplateId,
+      name: '기본 템플릿',
+      content: JSON.stringify({
+        dest_address: {
+          beonji_address: {
+            si_do: '{{region1DepthName}}',
+            si_gun_gu: '{{region2DepthName}}',
+            eup_myeon_dong_ri: '{{region3DepthName}}',
+            legal_dong: '{{region3DepthName}}',
+            legal_ri: '{{region4DepthName}}',
+            admin_dong: '{{region3DepthHName}}',
+            beonji: '{{mainAddressNo}}',
+            is_mountain: '{{mountainYn}}',
+            detail_address: '',
+            is_refined: 'false',
+            raw_address: '{{legalAddress}}'
+          },
+          road_address: {
+            si_do: '{{roadRegion1DepthName}}',
+            si_gun_gu: '{{roadRegion2DepthName}}',
+            road_name: '{{roadRegionRoadName}}',
+            building_number: '{{roadRegionMainBuildingNo}}',
+            building_name: '{{roadRegionBuildingName}}',
+            is_basement: '{{roadRegionUndergroundYn}}',
+            detail_address: '',
+            is_refined: 'false',
+            raw_address: '{{roadAddress}}'
+          },
+          latlng: {
+            lat: '{{lat}}',
+            lng: '{{lng}}'
+          }
+        },
+        caller: 'requestDelivery'
+      }, null, 2),
+      createdAt: now,
+      updatedAt: now
+    }]
+    saveTemplates()
+  }
+}
+
+const saveTemplates = () => {
+  localStorage.setItem('jsonTemplates', JSON.stringify(templates.value))
+}
+
+const loadSelectedTemplate = () => {
+  if (selectedTemplateId.value === '') {
+    createNewTemplate()
+    return
+  }
+  const template = templates.value.find(t => t.id === selectedTemplateId.value)
+  if (template) {
+    jsonExampleString.value = template.content
+    currentTemplateName.value = template.name
+    updateJsonExample()
+  }
+}
+
+const updateTemplateName = () => {
+  if (selectedTemplateId.value && currentTemplateName.value) {
+    const index = templates.value.findIndex(t => t.id === selectedTemplateId.value)
+    if (index !== -1) {
+      templates.value[index].name = currentTemplateName.value
+      templates.value[index].updatedAt = new Date().toISOString()
+      saveTemplates()
+    }
+  }
+}
+
+const createNewTemplate = () => {
+  selectedTemplateId.value = ''
+  currentTemplateName.value = '새 템플릿'
   jsonExampleString.value = JSON.stringify({
     dest_address: {
       beonji_address: {
@@ -136,11 +236,71 @@ onMounted(() => {
     caller: 'requestDelivery'
   }, null, 2)
   updateJsonExample()
+}
+
+const saveTemplate = () => {
+  if (!currentTemplateName.value) {
+    alert('템플릿 이름을 입력해주세요.')
+    return
+  }
+
+  const now = new Date().toISOString()
+
+  if (selectedTemplateId.value) {
+    // 기존 템플릿 업데이트
+    const index = templates.value.findIndex(t => t.id === selectedTemplateId.value)
+    if (index !== -1) {
+      templates.value[index] = {
+        ...templates.value[index],
+        name: currentTemplateName.value,
+        content: jsonExampleString.value,
+        updatedAt: now
+      }
+    }
+  } else {
+    // 새 템플릿 생성
+    const newTemplateId = uuidv4()
+    templates.value.push({
+      id: newTemplateId,
+      name: currentTemplateName.value,
+      content: jsonExampleString.value,
+      createdAt: now,
+      updatedAt: now
+    })
+    selectedTemplateId.value = newTemplateId
+  }
+
+  saveTemplates()
+  alert('템플릿이 저장되었습니다.')
+}
+
+const deleteTemplate = () => {
+  if (selectedTemplateId.value && confirm(`'${currentTemplateName.value}' 템플릿을 삭제하시겠습니까?`)) {
+    templates.value = templates.value.filter(t => t.id !== selectedTemplateId.value)
+    saveTemplates()
+    if (templates.value.length > 0) {
+      selectedTemplateId.value = templates.value[0].id
+      loadSelectedTemplate()
+    } else {
+      createNewTemplate()
+    }
+  }
+}
+
+onMounted(() => {
+  loadTemplates()
+  if (templates.value.length > 0) {
+    selectedTemplateId.value = templates.value[0].id
+    loadSelectedTemplate()
+  } else {
+    createNewTemplate()
+  }
   initializePlaceholdersAndInputs()
   console.log('Initial address state:', addressState)
 })
 
 watch(jsonExampleString, updateJsonExample)
+watch(selectedTemplateId, loadSelectedTemplate)
 </script>
 
 <style scoped>
@@ -150,13 +310,10 @@ watch(jsonExampleString, updateJsonExample)
 }
 .json-input-textarea {
   height: 100%;
-}
-.left-panel, .right-panel, .address-panel {
-  width: 45%;
-  margin: 10px;
-}
-.input-panel {
   width: 100%;
+}
+.left-panel, .right-panel {
+  width: 45%;
   margin: 10px;
 }
 pre, textarea {
@@ -165,10 +322,19 @@ pre, textarea {
   width: 100%;
   font-family: monospace;
 }
-span {
-  margin-right: 0.4em;
+select, button, input {
+  margin: 5px;
+  padding: 5px;
 }
-.label {
-  font-weight: bold;
+.template-selection {
+  display: flex;
+  align-items: center;
+}
+.template-selection select {
+  flex: 1;
+  margin-right: 10px;
+}
+.template-selection input {
+  flex: 2;
 }
 </style>
