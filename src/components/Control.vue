@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { CoordsAddress } from '@/models/Address'
 import { GeoService } from '@/services/GeoService'
@@ -23,7 +23,7 @@ import CopyableTextField from '@/components/CopyableTextField.vue'
 const store = useStore()
 const inputAddress = ref<CoordsAddress>(store.state.address?.legalAddress || '')
 const coordsStr = ref<string>(`${store.state.address?.coords?.x || 0},${store.state.address?.coords?.y || 0}`)
-const geoService = new GeoService()
+const geoService = ref<GeoService | null>(null)
 
 watch(() => store.state.address, (address) => {
   if (address) {
@@ -33,12 +33,16 @@ watch(() => store.state.address, (address) => {
 }, { deep: true })
 
 const updateByAddress = () => {
-  geoService.updateStateByAddress(inputAddress.value)
+  if (geoService.value) {
+    geoService.value.updateStateByAddress(inputAddress.value)
+  }
 }
 
 const updateByCoords = () => {
   const [x, y] = coordsStr.value.split(',')
-  geoService.updateStateByCoords(x, y)
+  if (geoService.value) {
+    geoService.value.updateStateByCoords(x, y)
+  }
 }
 
 const url = computed(() => {
@@ -48,5 +52,13 @@ const url = computed(() => {
   const x = store.state.address?.coords?.x || 0
   const y = store.state.address?.coords?.y || 0
   return `${urlParser.protocol}//${urlParser.hostname}${port}?x=${x}&y=${y}`
+})
+
+onMounted(async () => {
+  try {
+    geoService.value = await GeoService.getInstance()
+  } catch (error) {
+    console.error('GeoService 초기화 실패:', error)
+  }
 })
 </script>

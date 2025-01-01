@@ -1,16 +1,34 @@
-import store from '@/store'
-import { KakaoAddress } from '@/models/KakaoAddress'
 import { CoordsAddress } from '@/models/Address'
+import { KakaoAddress } from '@/models/KakaoAddress'
+import store from '@/store'
 
 export class GeoService {
-  private geocoder: {
-    addressSearch: (input: string, callback: (result: KakaoAddress[], status: string) => void) => void,
-    coord2Address: (x: string, y: string, callback: (result: KakaoAddress[], status: string) => void) => void
+  private static instance: GeoService | null = null
+  private geocoder: any
+
+  private constructor() {
+    this.geocoder = new window.kakao.maps.services.Geocoder()
   }
 
-  constructor() {
-    // @see https://apis.map.kakao.com/web/documentation/#services_Geocoder
-    this.geocoder = new window.kakao.maps.services.Geocoder()
+  public static async getInstance(): Promise<GeoService> {
+    if (this.instance) return this.instance
+
+    // Kakao Maps API가 로드될 때까지 대기
+    await new Promise<void>((resolve) => {
+      if (window.kakao?.maps?.services) {
+        resolve()
+      } else {
+        const checkKakaoInterval = setInterval(() => {
+          if (window.kakao?.maps?.services) {
+            clearInterval(checkKakaoInterval)
+            resolve()
+          }
+        }, 100)
+      }
+    })
+
+    this.instance = new GeoService()
+    return this.instance
   }
 
   updateStateByAddress(input: string): void {

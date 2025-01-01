@@ -20,6 +20,9 @@ module.exports = {
       'asyncArrow': 'always'
     }],
     '@typescript-eslint/no-non-null-assertion': 'off',
-    '@typescript-eslint/no-explicit-any': 'off'
+    '@typescript-eslint/no-explicit-any': 'off',
+    'no-multiple-empty-lines': 'off',
+    'no-trailing-spaces': 'off',
+    'no-multi-spaces': 'off'
   }
 }
