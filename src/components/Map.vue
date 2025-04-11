@@ -1,9 +1,5 @@
 <template>
   <div class="panel panel-default">
-    <div class="input-group mb-3">
-      <input type="text" class="form-control" id="inputAddress" placeholder="주소를 입력하세요 (예: 강남대로 577)" v-model="addressInput" @keyup.enter="searchAddress">
-      <button class="btn btn-primary" type="button" @click="searchAddress">검색</button>
-    </div>
     <div class="map-wrapper pannel-body">
       <div id="map"></div>
     </div>
@@ -18,7 +14,6 @@ import { DEFAULT_LAT, DEFAULT_LNG, MAP_LEVEL } from '@/config/env'
 
 const store = useStore()
 const geoService = ref<GeoService | null>(null)
-const addressInput = ref<string>('')
 
 const container = ref<HTMLElement | null>(null)
 const center = ref<any>(null)
@@ -33,13 +28,6 @@ const marker = ref<{
   setMap: (map: any) => void
   setDraggable: (draggable: boolean) => void
     } | null>(null)
-
-// 주소 검색 함수
-const searchAddress = () => {
-  if (geoService.value && addressInput.value.trim()) {
-    geoService.value.updateStateByAddress(addressInput.value.trim())
-  }
-}
 
 store.watch(
   (state) => state.address,
@@ -130,9 +118,5 @@ onMounted(async () => {
   width: 100%;
   height: 100%;
   position: relative;
-}
-
-.input-group {
-  margin-bottom: 10px;
 }
 </style>
