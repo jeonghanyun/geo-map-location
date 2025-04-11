@@ -1,6 +1,7 @@
 import { CoordsAddress } from '@/models/Address'
 import { KakaoAddress } from '@/models/KakaoAddress'
 import store from '@/store'
+import { KAKAO_MAPS_INTERVAL } from '@/config/env'
 
 export class GeoService {
   private static instance: GeoService | null = null
@@ -23,7 +24,7 @@ export class GeoService {
             clearInterval(checkKakaoInterval)
             resolve()
           }
-        }, 100)
+        }, KAKAO_MAPS_INTERVAL)
       }
     })
 
